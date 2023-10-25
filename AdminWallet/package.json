@@ -1,0 +1,16 @@
+{
+  "name": "mnemonic-generator",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rafia Tapia",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.347.1",
+    "ethers": "^5.7.2"
+  }
+}
