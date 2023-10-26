@@ -38,15 +38,21 @@ let lambdaSingleton = async () => {
     }
 }
 let signTx = async (FromAccountEmail, ToAddress, nonce, gasPrice, gasLimit, value, data) => {
-    let signedTx = await walletsvc.createSignTransaction(FromAccountEmail, ToAddress, nonce, gasPrice, gasLimit, value, data);
-    return signedTx;
+    try{
+        let signedTx = await walletsvc.createSignTransaction(FromAccountEmail, ToAddress, nonce, gasPrice, gasLimit, value, data);
+        return signedTx;
+    }
+    catch (e) {
+        console.log(`error occured in lambdSigleton: ${e}`);
+        throw e;
+    }
 }
 let sendEthersFromAdminAccount = async (email, ethAmount, TxGasPrice, TxGasLimit) => {
 
     let account = adminWallet;
     let toAddress = await walletsvc.getEthAddressFromDB(email);
     try {
-        let receipt = await this.web3.eth.sendTransaction({
+        let receipt = await web3.eth.sendTransaction({
             from: account.address,
             to: toAddress,
             value: ethAmount * 1000000000000000000,
@@ -57,7 +63,8 @@ let sendEthersFromAdminAccount = async (email, ethAmount, TxGasPrice, TxGasLimit
         return { 'status': 'Success', 'Transaction Receipt': receipt };
     }
     catch (error) {
-        console.log(error);
+        console.log(`Error in sendEthersFromAdminAccount: ${error}`);
+        throw e;
     }
 
 }
@@ -65,7 +72,7 @@ let sendCoinFromAdminAccount=async(email,coinAmount,TxGasPrice,TxGasLimit)=>{
     let account = adminWallet;
     let toAddress = await walletsvc.getEthAddressFromDB(email);
     try {
-        let receipt = await this.web3.eth.sendTransaction({
+        let receipt = await web3.eth.sendTransaction({
             from: account.address,
             to: process.env.COIN_CONTRACT_ADDRESS,
             value: "0x00",
@@ -77,13 +84,14 @@ let sendCoinFromAdminAccount=async(email,coinAmount,TxGasPrice,TxGasLimit)=>{
         return { 'status': 'Success', 'Transaction Receipt': receipt };
     }
     catch (error) {
-        console.log(error);
+        console.log(`Error in sendCoinFromAdminAccount: ${error}`);
+        throw error
     }
 }
 let callContractFunction=async(data,TxGasPrice,TxGasLimit)=>{
     let account = adminWallet;
     try {
-        let receipt = await this.web3.eth.sendTransaction({
+        let receipt = await web3.eth.sendTransaction({
             from: account.address,
             to: process.env.COIN_CONTRACT_ADDRESS,
             value: "0x00",
@@ -95,44 +103,56 @@ let callContractFunction=async(data,TxGasPrice,TxGasLimit)=>{
         return { 'status': 'Success', 'Transaction Receipt': receipt };
     }
     catch (error) {
-        console.log(error);
+        console.log(`Error in callContractFunction: ${error}`);
+        throw error;
     }
 }
 let getCoinTransferData = (toEthAddress, coinValue) => {
-    let returnData = "";
-    let encodingStrs = [];
-    encodingStrs.push(this.web3.eth.abi.encodeFunctionSignature("transfer(address,uint256)"));
-    encodingStrs.push(this.web3.eth.abi.encodeParameter('address', toEthAddress));
-    encodingStrs.push(this.web3.eth.abi.encodeParameter('uint256', coinValue));
-
-
-    for (let i = 0; i < encodingStrs.length; i++) {
-        let strLowerCase = encodingStrs[i].toLowerCase();
-        if (strLowerCase.startsWith("0x")) {
-            returnData += encodingStrs[i].substring(2);
+    try{
+        let returnData = "";
+        let encodingStrs = [];
+        encodingStrs.push(web3.eth.abi.encodeFunctionSignature("transfer(address,uint256)"));
+        encodingStrs.push(web3.eth.abi.encodeParameter('address', toEthAddress));
+        encodingStrs.push(web3.eth.abi.encodeParameter('uint256', coinValue));
+    
+    
+        for (let i = 0; i < encodingStrs.length; i++) {
+            let strLowerCase = encodingStrs[i].toLowerCase();
+            if (strLowerCase.startsWith("0x")) {
+                returnData += encodingStrs[i].substring(2);
+            }
+            else {
+                returnData += encodingStrs[i];
+            }
         }
-        else {
-            returnData += encodingStrs[i];
-        }
+        return '0x' + returnData;
     }
-    return '0x' + returnData;
+    catch (error) {
+        console.log(`Error in getCoinTransferData: ${error}`);
+        throw error;
+    }
 }
 let getCoinBalanceData=(toEthAddress)=>{
-    //balanceOf(address account) → uint256
-    let returnData = "";
-    let encodingStrs = [];
-    encodingStrs.push(this.web3.eth.abi.encodeFunctionSignature("balanceOf(address)"));
-    encodingStrs.push(this.web3.eth.abi.encodeParameter('address', toEthAddress));
-    for (let i = 0; i < encodingStrs.length; i++) {
-        let strLowerCase = encodingStrs[i].toLowerCase();
-        if (strLowerCase.startsWith("0x")) {
-            returnData += encodingStrs[i].substring(2);
+    try{
+        let returnData = "";
+        let encodingStrs = [];
+        encodingStrs.push(web3.eth.abi.encodeFunctionSignature("balanceOf(address)"));
+        encodingStrs.push(web3.eth.abi.encodeParameter('address', toEthAddress));
+        for (let i = 0; i < encodingStrs.length; i++) {
+            let strLowerCase = encodingStrs[i].toLowerCase();
+            if (strLowerCase.startsWith("0x")) {
+                returnData += encodingStrs[i].substring(2);
+            }
+            else {
+                returnData += encodingStrs[i];
+            }
         }
-        else {
-            returnData += encodingStrs[i];
-        }
+        return '0x' + returnData;
     }
-    return '0x' + returnData;
+    catch (error) {
+        console.log(`Error in getCoinTransferData: ${error}`);
+        throw error;
+    }
 }
 export const handler = async (event) => {
     await lambdaSingleton();
