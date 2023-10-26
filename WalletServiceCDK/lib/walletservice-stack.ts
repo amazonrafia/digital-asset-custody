@@ -103,7 +103,7 @@ export class WalletServiceStack extends cdk.Stack {
       handler: "index.handler",
       runtime: lambda.Runtime.NODEJS_18_X,
       description: "Lambda to implement Digital Wallet functionality",
-      environment: { "DYNAMODB_NAME": UserKeyMapping.tableName,"SECRET_MGR_STR":"adminwallet","LAMBDA_EXEX_ROLE": lambdaExecRole.roleArn,"NETWORK_ENDPOINT":"http://54.147.132.123"},
+      environment: { "DYNAMODB_NAME": UserKeyMapping.tableName,"SECRET_MGR_STR":"adminwallet","LAMBDA_EXEX_ROLE": lambdaExecRole.roleArn,"COIN_CONTRACT_ADDRESS":"0xF8516b792d7054df9A32D32EE9b5F4d80Ce8fFec","NETWORK_ENDPOINT":""},
       functionName: "DigAssetCustWrk-WalletSvcLambda",
       paramsAndSecrets:lambda.ParamsAndSecretsLayerVersion.fromVersion(lambda.ParamsAndSecretsVersions.V1_0_103),
       layers: [walletServiceLambdaLayer],
