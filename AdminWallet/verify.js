@@ -6,7 +6,7 @@ let adminAddress=process.env.ADMIN_ETH_ADDRESS;
 let chainProvider;
 
 let getAccountEthBalance=async ()=>{
-    console.log(`Admin account ${adminAddress} has ${await chainProvider.getBalance(adminAddress)} Ethers`);
+    console.log(`Admin account ${adminAddress} has ${await chainProvider.getBalance(adminAddress)} Wei`);
 };
 
 
