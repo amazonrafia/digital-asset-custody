@@ -148,6 +148,12 @@ export const handler = async (event) => {
         let bodyPayload;
 
         switch (urlPath) {
+            case '/getaddress':
+                bodyPayload = JSON.parse(event.body);
+                requestEmail = bodyPayload["email"];
+                let ethAddress=await walletsvc.getKMSIdFromDB(requestEmail);
+                resValue=`Ethereum Address for the email ${requestEmail} is: ${ethAddress}`;
+                break;
             case '/createwallet':
                 bodyPayload = JSON.parse(event.body);
                 requestEmail = bodyPayload["email"].replaceAll("@", "_").replaceAll(".", "_");
