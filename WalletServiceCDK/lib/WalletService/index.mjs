@@ -18,8 +18,7 @@ let lambdaSingleton = async () => {
             let secretValue = await fetch(`http://localhost:2773/secretsmanager/get?secretId=${encodeURIComponent(process.env.SECRET_MGR_STR)}`, { headers: { 'X-Aws-Parameters-Secrets-Token': process.env.AWS_SESSION_TOKEN, 'Content-Type': 'application/json' } });
             let jsonTxt = await secretValue.json();
             adminPrivateKey = JSON.parse(jsonTxt.SecretString)["privatekey"];
-            adminWallet = web3.eth.accounts.wallet.add(adminPrivateKey);
-
+            
             if(process.env.NETWORK_ENDPOINT==undefined || process.env.NETWORK_ENDPOINT==""){
                 secretValue = await fetch(`http://localhost:2773/secretsmanager/get?secretId=${encodeURIComponent("GoerliAccess")}`, { headers: { 'X-Aws-Parameters-Secrets-Token': process.env.AWS_SESSION_TOKEN, 'Content-Type': 'application/json' } });
                 jsonTxt = await secretValue.json();
@@ -29,6 +28,7 @@ let lambdaSingleton = async () => {
             else{
                 web3= new Web3(new Web3.providers.HttpProvider(process.env.NETWORK_ENDPOINT))
             }
+            adminWallet = web3.eth.accounts.wallet.add(adminPrivateKey);
             
         }
         catch (e) {

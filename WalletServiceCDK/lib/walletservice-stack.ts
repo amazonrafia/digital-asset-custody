@@ -63,7 +63,14 @@ export class WalletServiceStack extends cdk.Stack {
         sid: "DigAssetCustWrkPolicy3",
         actions: [
           "kms:Create*",
-          "kms:Describe*"
+          "kms:Describe*",
+          "kms:ListKeys",
+				  "kms:GetPublicKey",
+				  "kms:Decrypt",
+				  "kms:Encrypt",
+				  "kms:ListAliases",
+				  "kms:Verify",
+				  "kms:Sign"
         ],
         effect: iam.Effect.ALLOW,
         resources: ["*"]
