@@ -80,7 +80,7 @@ let sendCoinFromAdminAccount=async(email,coinAmount,TxGasPrice,TxGasLimit)=>{
         console.log(error);
     }
 }
-let callContractFunction=async(data)=>{
+let callContractFunction=async(data,TxGasPrice,TxGasLimit)=>{
     let account = adminWallet;
     try {
         let receipt = await this.web3.eth.sendTransaction({
@@ -162,7 +162,7 @@ export const handler = async (event) => {
                 bodyPayload = JSON.parse(event.body);
                 let TxToSubmit = await signTx(bodyPayload["email"], bodyPayload["ToEthAccount"], bodyPayload["nonce"], bodyPayload["gasPrice"], bodyPayload["gasLimit"], bodyPayload["TxValue"], bodyPayload["TxData"]);
                 let submittedTxHash = await web3.eth.sendSignedTransaction(TxToSubmit);
-                resValue = { "TransactionHash": transactionHash };
+                resValue = { "TransactionHash": submittedTxHash };
                 break;
             case '/sendethers':
                 bodyPayload = JSON.parse(event.body);
@@ -242,14 +242,22 @@ export const handler = async (event) => {
                 requestEmail = bodyPayload["email"];
                 let ethBalanceAddress = await walletsvc.getEthAddressFromDB(requestEmail);
                 let ethBlanceInWei=await web3.eth.getBalance(ethBalanceAddress);
-                resValue={ 'status': 'Success', 'Msg': `Ether balance for ${emailAddress} (in Wei) is: ${ethBlanceInWei}` };
+                resValue={ 'status': 'Success', 'Msg': `Ether balance for ${requestEmail} (in Wei) is: ${ethBlanceInWei}` };
                 break;
             case '/getcoinbalance':
                 bodyPayload = JSON.parse(event.body);
                 requestEmail = bodyPayload["email"];
                 let coinBalanceAddress = await walletsvc.getEthAddressFromDB(requestEmail);
-                let coinBlance=await callContractFunction(getCoinBalanceData(coinBalanceAddress));
-                resValue={ 'status': 'Success', 'Msg': `Coin balance for ${emailAddress} is: ${ethBlanceInWei}` }
+                txgasprice = 20000000000;
+                txgaslimit = 5000000;
+                if (bodyPayload["gasprice"] != null || bodyPayload["gasprice"] != undefined || bodyPayload["gasprice"] != "") {
+                    txgasprice = bodyPayload["gasprice"];
+                }
+                if (bodyPayload["gaslimit"] != null || bodyPayload["gaslimit"] != undefined || bodyPayload["gaslimit"] != "") {
+                    txgaslimit = bodyPayload["gaslimit"];
+                }
+                let coinBlance=await callContractFunction(getCoinBalanceData(coinBalanceAddress),txgasprice,txgaslimit);
+                resValue={ 'status': 'Success', 'Msg': `Coin balance for ${requestEmail} is: ${coinBlance}` };
                 break;
             default:
                 resValue = { "Error": `Invalid Url: ${JSON.stringify(event.rawPath)}` };
