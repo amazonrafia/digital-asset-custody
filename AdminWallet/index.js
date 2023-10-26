@@ -9,7 +9,7 @@ console.log("****************************************** Admin Account **********
 for (let count = 0; count < 1; count++) {
     accountWallets.push(ethers.Wallet.fromMnemonic(mnemonicStr, `m/44'/60'/0'/0/${count}`, ethers.wordlists.en));
     console.log(`Ethereum Address: ${accountWallets[count].address}`);
-    console.log(`Private Key: ${accountWallets[count].privateKey}`);
+    //console.log(`Private Key: ${accountWallets[count].privateKey}`);
     console.log(`\n`);
 }
 //store private key in secret manager
