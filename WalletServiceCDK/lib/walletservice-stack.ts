@@ -116,6 +116,7 @@ export class WalletServiceStack extends cdk.Stack {
       layers: [walletServiceLambdaLayer],
       role: lambdaExecRole,
       timeout: cdk.Duration.seconds(180),
+      memorySize:512
       //vpc:vpc
     });
     walletServiceLambda.node.addDependency(lambdaExecRole);
