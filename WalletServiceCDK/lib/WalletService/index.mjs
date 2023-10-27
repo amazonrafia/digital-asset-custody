@@ -64,7 +64,7 @@ let sendEthersFromAdminAccount = async (email, ethAmount, TxGasPrice, TxGasLimit
     }
     catch (error) {
         console.log(`Error in sendEthersFromAdminAccount: ${error}`);
-        throw e;
+        throw error;
     }
 
 }
@@ -86,25 +86,6 @@ let sendCoinFromAdminAccount=async(email,coinAmount,TxGasPrice,TxGasLimit)=>{
     catch (error) {
         console.log(`Error in sendCoinFromAdminAccount: ${error}`);
         throw error
-    }
-}
-let callContractFunction=async(data,TxGasPrice,TxGasLimit)=>{
-    let account = adminWallet;
-    try {
-        let receipt = await web3.eth.sendTransaction({
-            from: account.address,
-            to: process.env.COIN_CONTRACT_ADDRESS,
-            value: "0x00",
-            gasPrice: TxGasPrice,
-            gasLimit: TxGasLimit,
-            data:data
-            // other transaction's params
-        });
-        return { 'status': 'Success', 'Transaction Receipt': receipt };
-    }
-    catch (error) {
-        console.log(`Error in callContractFunction: ${error}`);
-        throw error;
     }
 }
 let getCoinTransferData = (toEthAddress, coinValue) => {
@@ -132,27 +113,35 @@ let getCoinTransferData = (toEthAddress, coinValue) => {
         throw error;
     }
 }
-let getCoinBalanceData=(toEthAddress)=>{
-    try{
-        let returnData = "";
-        let encodingStrs = [];
-        encodingStrs.push(web3.eth.abi.encodeFunctionSignature("balanceOf(address)"));
-        encodingStrs.push(web3.eth.abi.encodeParameter('address', toEthAddress));
-        for (let i = 0; i < encodingStrs.length; i++) {
-            let strLowerCase = encodingStrs[i].toLowerCase();
-            if (strLowerCase.startsWith("0x")) {
-                returnData += encodingStrs[i].substring(2);
-            }
-            else {
-                returnData += encodingStrs[i];
-            }
-        }
-        return '0x' + returnData;
-    }
-    catch (error) {
-        console.log(`Error in getCoinTransferData: ${error}`);
-        throw error;
-    }
+
+let getCoinBalance=async (ethAccount)=>{
+    let balanceOfABI=[
+        {
+            "inputs": [
+              {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+              }
+            ],
+            "name": "balanceOf",
+            "outputs": [
+              {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+              }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+          }
+    ];
+    
+    let tokenAddress = process.env.COIN_CONTRACT_ADDRESS;
+    let tokenContract = new web3.eth.Contract(balanceOfABI, tokenAddress);
+    let result = await tokenContract.methods.balanceOf(ethAccount).call({ from: adminWallet.address, gasPrice: '20000000000', gas: 5000000 });
+    console.log(`Balance of coin: ${result}`);
+    return `Balance of coin: ${result}`;
 }
 export const handler = async (event) => {
     await lambdaSingleton();
@@ -274,16 +263,7 @@ export const handler = async (event) => {
                 bodyPayload = JSON.parse(event.body);
                 requestEmail = bodyPayload["email"];
                 let coinBalanceAddress = await walletsvc.getEthAddressFromDB(requestEmail);
-                txgasprice = 20000000000;
-                txgaslimit = 5000000;
-                if (bodyPayload["gasprice"] != null || bodyPayload["gasprice"] != undefined || bodyPayload["gasprice"] != "") {
-                    txgasprice = bodyPayload["gasprice"];
-                }
-                if (bodyPayload["gaslimit"] != null || bodyPayload["gaslimit"] != undefined || bodyPayload["gaslimit"] != "") {
-                    txgaslimit = bodyPayload["gaslimit"];
-                }
-                let coinBlance=await callContractFunction(getCoinBalanceData(coinBalanceAddress),txgasprice,txgaslimit);
-                resValue={ 'status': 'Success', 'Msg': `Coin balance for ${requestEmail} is: ${coinBlance}` };
+                resValue= await getCoinBalance(coinBalanceAddress);
                 break;
             default:
                 resValue = { "Error": `Invalid Url: ${JSON.stringify(event.rawPath)}` };
@@ -295,6 +275,7 @@ export const handler = async (event) => {
 
     }
     catch (e) {
+        console.log(`Error in main handler: {e}`);
         return {
             "status": 500,
             "responseContent": JSON.stringify(e)
