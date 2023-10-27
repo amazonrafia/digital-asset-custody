@@ -1,2 +1,0 @@
-export ETH_PRIVATE_KEY=$(aws secretsmanager get-secret-value --secret-id adminwallet | jq '.SecretString' | sed 's/\\"/"/g' | sed 's/^.//;s/.$//' | jq '.privatekey' | sed 's/^.//;s/.$//')
-export BESU_NODE1_ENDPOINT=http://[IP of your besu node]:8545

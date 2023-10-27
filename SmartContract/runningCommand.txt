@@ -1,2 +1,0 @@
-npx hardhat compile
-npx hardhat run --network besudev scripts/deploy.ts
