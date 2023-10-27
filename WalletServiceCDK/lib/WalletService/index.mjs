@@ -188,10 +188,10 @@ export const handler = async (event) => {
                 let sendEthnonce = await web3.eth.getTransactionCount(ethSenderAddress);
                 txgasprice = 20000000000;
                 txgaslimit = 5000000;
-                if (bodyPayload["gasprice"] != null || bodyPayload["gasprice"] != undefined || bodyPayload["gasprice"] != "") {
+                if (bodyPayload["gasprice"] != null && bodyPayload["gasprice"] != undefined && bodyPayload["gasprice"] != "") {
                     txgasprice = bodyPayload["gasprice"];
                 }
-                if (bodyPayload["gaslimit"] != null || bodyPayload["gaslimit"] != undefined || bodyPayload["gaslimit"] != "") {
+                if (bodyPayload["gaslimit"] != null && bodyPayload["gaslimit"] != undefined && bodyPayload["gaslimit"] != "") {
                     txgaslimit = bodyPayload["gaslimit"];
                 }
                 let SignedEthTxToSubmit = await signTx(requestEmail, receiverAddress, sendEthnonce, txgasprice, txgaslimit, amountToSend, "0x00");
@@ -205,10 +205,10 @@ export const handler = async (event) => {
                 txgasprice = 20000000000;
                 txgaslimit = 5000000;
 
-                if (bodyPayload["gasprice"] != null || bodyPayload["gasprice"] != undefined || bodyPayload["gasprice"] != "") {
+                if (bodyPayload["gasprice"] != null && bodyPayload["gasprice"] != undefined && bodyPayload["gasprice"] != "") {
                     txgasprice = bodyPayload["gasprice"];
                 }
-                if (bodyPayload["gaslimit"] != null || bodyPayload["gaslimit"] != undefined || bodyPayload["gaslimit"] != "") {
+                if (bodyPayload["gaslimit"] != null && bodyPayload["gaslimit"] != undefined && bodyPayload["gaslimit"] != "") {
                     txgaslimit = bodyPayload["gaslimit"];
                 }
                 resValue = await sendEthersFromAdminAccount(requestEmail, buyEthAmount, txgasprice, txgaslimit);
@@ -224,10 +224,10 @@ export const handler = async (event) => {
                 let requestAmount=bodyPayload["dollaramount"];
                 txgasprice = 20000000000;
                 txgaslimit = 5000000;
-                if (bodyPayload["gasprice"] != null || bodyPayload["gasprice"] != undefined || bodyPayload["gasprice"] != "") {
+                if (bodyPayload["gasprice"] != null && bodyPayload["gasprice"] != undefined && bodyPayload["gasprice"] != "") {
                     txgasprice = bodyPayload["gasprice"];
                 }
-                if (bodyPayload["gaslimit"] != null || bodyPayload["gaslimit"] != undefined || bodyPayload["gaslimit"] != "") {
+                if (bodyPayload["gaslimit"] != null && bodyPayload["gaslimit"] != undefined && bodyPayload["gaslimit"] != "") {
                     txgaslimit = bodyPayload["gaslimit"];
                 }
                 let numberOfCoin=Math.floor(requestAmount/10);
@@ -242,10 +242,10 @@ export const handler = async (event) => {
                 let sendCoinNonce = await web3.eth.getTransactionCount(coinSenderAddress);
                 txgasprice = 20000000000;
                 txgaslimit = 5000000;
-                if (bodyPayload["gasprice"] != null || bodyPayload["gasprice"] != undefined || bodyPayload["gasprice"] != "") {
+                if (bodyPayload["gasprice"] != null && bodyPayload["gasprice"] != undefined && bodyPayload["gasprice"] != "") {
                     txgasprice = bodyPayload["gasprice"];
                 }
-                if (bodyPayload["gaslimit"] != null || bodyPayload["gaslimit"] != undefined || bodyPayload["gaslimit"] != "") {
+                if (bodyPayload["gaslimit"] != null && bodyPayload["gaslimit"] != undefined && bodyPayload["gaslimit"] != "") {
                     txgaslimit = bodyPayload["gaslimit"];
                 }
                 let SignedCoinTxToSubmit = await signTx(requestEmail, process.env.COIN_CONTRACT_ADDRESS, sendCoinNonce, txgasprice, txgaslimit, "0x00", getCoinTransferData(receiverAddress,coinToSend));
