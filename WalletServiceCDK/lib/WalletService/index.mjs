@@ -249,8 +249,14 @@ export const handler = async (event) => {
                     txgaslimit = bodyPayload["gaslimit"];
                 }
                 let SignedCoinTxToSubmit = await signTx(requestEmail, process.env.COIN_CONTRACT_ADDRESS, sendCoinNonce, txgasprice, txgaslimit, "0x00", getCoinTransferData(receiverAddress,coinToSend));
-                let coinTransactionHash = await web3.eth.sendSignedTransaction(SignedCoinTxToSubmit);
-                resValue = { "TransactionHash": coinTransactionHash };
+                try{
+                    let coinTransactionHash = await web3.eth.sendSignedTransaction(SignedCoinTxToSubmit);
+                    resValue = { "TransactionHash": coinTransactionHash };
+                }
+                catch(sendcoinError){
+                    console.log(sendcoinError);
+                    resValue = { "Error": sendcoinError };
+                }
                 break;
             case '/getethbalance':
                 bodyPayload = JSON.parse(event.body);
