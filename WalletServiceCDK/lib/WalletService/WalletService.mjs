@@ -54,7 +54,13 @@ export default class WalletService{
         };
         let dbcommand = new GetItemCommand(dbinputData);
         let response = await dbclient.send(dbcommand);
-        return response.Item.EthAddress.S;
+
+        if(response.Item==undefined){
+            return "";
+        }
+        else{
+            return response.Item.EthAddress.S;
+        }
     }
     
     getEthereumAddress(publicKey) {

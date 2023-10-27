@@ -157,31 +157,33 @@ export const handler = async (event) => {
         let bodyPayload;
 
         switch (urlPath) {
-            case '/getaddress':
-                bodyPayload = JSON.parse(event.body);
-                requestEmail = bodyPayload["email"];
-                let ethAddress=await walletsvc.getKMSIdFromDB(requestEmail);
-                resValue=`Ethereum Address for the email ${requestEmail} is: ${ethAddress}`;
-                break;
             case '/createwallet':
                 bodyPayload = JSON.parse(event.body);
-                requestEmail = bodyPayload["email"].replaceAll("@", "_").replaceAll(".", "_");
-                resValue = await walletsvc.createWallet(bodyPayload["email"], requestEmail);
+                requestEmail = bodyPayload["email"].toLowerCase();
+                let kmdAliasStr=requestEmail.replaceAll("@", "_").replaceAll(".", "_");
+                //first check if this email exists in db
+                let verifyEmail=await walletsvc.getEthAddressFromDB(requestEmail);
+                if(verifyEmail==""){
+                    resValue = await walletsvc.createWallet(requestEmail, kmdAliasStr);
+                }
+                else{
+                    resValue = "Key with this email already exists"
+                }
                 break;
             case '/signTx':
                 bodyPayload = JSON.parse(event.body);
-                let SignedTransaction = await signTx(bodyPayload["email"], bodyPayload["ToEthAccount"], bodyPayload["nonce"], bodyPayload["gasPrice"], bodyPayload["gasLimit"], bodyPayload["TxValue"], bodyPayload["TxData"]);
+                let SignedTransaction = await signTx(bodyPayload["email"].toLowerCase(), bodyPayload["ToEthAccount"], bodyPayload["nonce"], bodyPayload["gasPrice"], bodyPayload["gasLimit"], bodyPayload["TxValue"], bodyPayload["TxData"]);
                 resValue = { "SignedTx": SignedTransaction };
                 break;
             case '/signandsubmit':
                 bodyPayload = JSON.parse(event.body);
-                let TxToSubmit = await signTx(bodyPayload["email"], bodyPayload["ToEthAccount"], bodyPayload["nonce"], bodyPayload["gasPrice"], bodyPayload["gasLimit"], bodyPayload["TxValue"], bodyPayload["TxData"]);
+                let TxToSubmit = await signTx(bodyPayload["email"].toLowerCase(), bodyPayload["ToEthAccount"], bodyPayload["nonce"], bodyPayload["gasPrice"], bodyPayload["gasLimit"], bodyPayload["TxValue"], bodyPayload["TxData"]);
                 let submittedTxHash = await web3.eth.sendSignedTransaction(TxToSubmit);
                 resValue = { "TransactionHash": submittedTxHash };
                 break;
             case '/sendethers':
                 bodyPayload = JSON.parse(event.body);
-                requestEmail = bodyPayload["email"];
+                requestEmail = bodyPayload["email"].toLowerCase();
                 receiverAddress = bodyPayload["ToEthAccount"];
                 let amountToSend = bodyPayload["amount"];
                 let ethSenderAddress = await walletsvc.getEthAddressFromDB(requestEmail);
@@ -200,7 +202,7 @@ export const handler = async (event) => {
                 break;
             case '/buyethers':
                 bodyPayload = JSON.parse(event.body);
-                requestEmail = bodyPayload["email"];
+                requestEmail = bodyPayload["email"].toLowerCase();
                 let buyEthAmount = bodyPayload["ethamount"];
                 txgasprice = 20000000000;
                 txgaslimit = 5000000;
@@ -215,12 +217,13 @@ export const handler = async (event) => {
                 break;
             case '/getethAddress':
                 bodyPayload = JSON.parse(event.body);
-                requestEmail = bodyPayload["email"];
-                resValue = await walletsvc.getEthAddressFromDB(requestEmail);
+                requestEmail = bodyPayload["email"].toLowerCase();
+                let ethAddress=await walletsvc.getEthAddressFromDB(requestEmail);
+                resValue=`Ethereum Address for the email ${requestEmail} is: ${ethAddress}`;
                 break;
             case '/buystablecoin':
                 bodyPayload = JSON.parse(event.body);
-                requestEmail = bodyPayload["email"];
+                requestEmail = bodyPayload["email"].toLowerCase();
                 let requestAmount=bodyPayload["dollaramount"];
                 txgasprice = 20000000000;
                 txgaslimit = 5000000;
@@ -235,7 +238,7 @@ export const handler = async (event) => {
                 break;
             case '/sendcoins':
                 bodyPayload = JSON.parse(event.body);
-                requestEmail = bodyPayload["email"];
+                requestEmail = bodyPayload["email"].toLowerCase();
                 receiverAddress = bodyPayload["ToEthAccount"];
                 let coinToSend = bodyPayload["coincount"];
                 let coinSenderAddress = await walletsvc.getEthAddressFromDB(requestEmail);
@@ -260,14 +263,14 @@ export const handler = async (event) => {
                 break;
             case '/getethbalance':
                 bodyPayload = JSON.parse(event.body);
-                requestEmail = bodyPayload["email"];
+                requestEmail = bodyPayload["email"].toLowerCase();
                 let ethBalanceAddress = await walletsvc.getEthAddressFromDB(requestEmail);
                 let ethBlanceInWei=await web3.eth.getBalance(ethBalanceAddress);
                 resValue={ 'status': 'Success', 'Msg': `Ether balance for ${requestEmail} (in Wei) is: ${ethBlanceInWei}` };
                 break;
             case '/getcoinbalance':
                 bodyPayload = JSON.parse(event.body);
-                requestEmail = bodyPayload["email"];
+                requestEmail = bodyPayload["email"].toLowerCase();
                 let coinBalanceAddress = await walletsvc.getEthAddressFromDB(requestEmail);
                 resValue= await getCoinBalance(coinBalanceAddress);
                 break;
