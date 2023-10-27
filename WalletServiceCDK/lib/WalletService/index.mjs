@@ -55,7 +55,7 @@ let sendEthersFromAdminAccount = async (email, ethAmount, TxGasPrice, TxGasLimit
         let receipt = await web3.eth.sendTransaction({
             from: account.address,
             to: toAddress,
-            value: ethAmount * 1000000000000000000,
+            value: ethAmount,
             gasPrice: TxGasPrice,
             gasLimit: TxGasLimit,
             // other transaction's params
