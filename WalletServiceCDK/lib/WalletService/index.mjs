@@ -230,8 +230,8 @@ export const handler = async (event) => {
                 if (bodyPayload["gaslimit"] != null && bodyPayload["gaslimit"] != undefined && bodyPayload["gaslimit"] != "") {
                     txgaslimit = bodyPayload["gaslimit"];
                 }
-                let numberOfCoin=Math.floor(requestAmount/10);
-                resValue = await sendCoinFromAdminAccount(requestEmail, numberOfCoin, txgasprice, txgaslimit);
+                //let numberOfCoin=Math.floor(requestAmount/10);
+                resValue = await sendCoinFromAdminAccount(requestEmail, requestAmount, txgasprice, txgaslimit);
                 break;
             case '/sendcoins':
                 bodyPayload = JSON.parse(event.body);
