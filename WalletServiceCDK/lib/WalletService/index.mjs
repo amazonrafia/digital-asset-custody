@@ -183,7 +183,7 @@ export const handler = async (event) => {
                 bodyPayload = JSON.parse(event.body);
                 requestEmail = bodyPayload["email"];
                 receiverAddress = bodyPayload["ToEthAccount"];
-                let amountToSend = bodyPayload["amount"] * 1000000000000000000;
+                let amountToSend = bodyPayload["amount"];
                 let ethSenderAddress = await walletsvc.getEthAddressFromDB(requestEmail);
                 let sendEthnonce = await web3.eth.getTransactionCount(ethSenderAddress);
                 txgasprice = 20000000000;
