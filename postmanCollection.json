@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "f4d035e1-421e-47e5-86d8-ee793a5b6897",
+		"_postman_id": "e0b88324-c2d7-4ecd-926c-f2e99e775dfc",
 		"name": "DigitalAssetCustody",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30797738"
 	},
 	"item": [
 		{
@@ -18,7 +19,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"Customer1@ReInventWkr.com\"\n}"
+					"raw": "{\n    \"email\":\"customer1@reinventwkr.com\"\n}"
 				},
 				"url": {
 					"raw": "{{apigatewayURL}}/createwallet",
@@ -39,7 +40,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"Customer1@ReInventWkr.com\"\n}"
+					"raw": "{\n    \"email\":\"customer1@reinventwkr.com\"\n}"
 				},
 				"url": {
 					"raw": "{{apigatewayURL}}/getethbalance",
@@ -60,7 +61,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"Customer2@ReInventWkr.com\"\n}"
+					"raw": "{\n    \"email\":\"customer1@reinventwkr.com\"\n}"
 				},
 				"url": {
 					"raw": "{{apigatewayURL}}/getcoinbalance",
@@ -69,27 +70,6 @@
 					],
 					"path": [
 						"getcoinbalance"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetSignedTx",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"email\":\"Customer2@ReInventWkr.com\",\n    \"ToEthAccount\":\"0x9b9fe4c69f6c356b21bb05cde5046cb7ae1b890b\",\n    \"nonce\":\"1\",\n    \"gasPrice\":20000000000,\n    \"gasLimit\":5000000,\n    \"TxValue\":100,\n    \"TxData\":\"0x00\"\n}"
-				},
-				"url": {
-					"raw": "{{apigatewayURL}}/signTx",
-					"host": [
-						"{{apigatewayURL}}"
-					],
-					"path": [
-						"signTx"
 					]
 				}
 			},
@@ -108,7 +88,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"Customer1@ReInventWkr.com\",\n    \"ethamount\":5000000000000000000\n}"
+					"raw": "{\n    \"email\":\"customer1@reinventwkr.com\",\n    \"ethamount\":500000000000000000\n}"
 				},
 				"url": {
 					"raw": "{{apigatewayURL}}/buyethers",
@@ -135,7 +115,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"Customer1@ReInventWkr.com\",\n    \"dollaramount\":30\n}"
+					"raw": "{\n    \"email\":\"customer1@reinventwkr.com\",\n    \"dollaramount\":30\n}"
 				},
 				"url": {
 					"raw": "{{apigatewayURL}}/buystablecoin",
@@ -150,55 +130,13 @@
 			"response": []
 		},
 		{
-			"name": "GetEthereumAddress",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"email\":\"Customer3@ReInventWkr.com\"\n}"
-				},
-				"url": {
-					"raw": "{{apigatewayURL}}/getaddress",
-					"host": [
-						"{{apigatewayURL}}"
-					],
-					"path": [
-						"getaddress"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SignedAndSubmitTx",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"email\":\"Customer1@ReInventWkr.com\",\n    \"ToEthAccount\":\"0xbfe8f95afd72576781a1fdc0aa20c6d1804a97e2\",\n    \"nonce\":\"1\",\n    \"gasPrice\":20000000000,\n    \"gasLimit\":5000000,\n    \"TxValue\":100,\n    \"TxData\":\"0x00\"\n}"
-				},
-				"url": {
-					"raw": "{{apigatewayURL}}/signandsubmit",
-					"host": [
-						"{{apigatewayURL}}"
-					],
-					"path": [
-						"signandsubmit"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "CustomerSendsEthers",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"Customer1@ReInventWkr.com\",\n    \"ToEthAccount\":\"0xbfe8f95afd72576781a1fdc0aa20c6d1804a97e2\",\n    \"amount\":1,\n    \"gasprice\":200000,\n    \"gaslimit\":50000\n}"
+					"raw": "{\n    \"email\":\"customer1@reinventwkr.com\",\n    \"ToEthAccount\":\"Enter customer 2 Ethereum Address\",\n    \"amount\":50000000000000000,\n    \"gasprice\":200000,\n    \"gaslimit\":50000\n}"
 				},
 				"url": {
 					"raw": "{{apigatewayURL}}/sendethers",
@@ -213,13 +151,34 @@
 			"response": []
 		},
 		{
+			"name": "GetEthereumAddress",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"customer3@reinventwkr.com\"\n}"
+				},
+				"url": {
+					"raw": "{{apigatewayURL}}/getethAddress",
+					"host": [
+						"{{apigatewayURL}}"
+					],
+					"path": [
+						"getethAddress"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "CustomerSendsCoin",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"Customer2@ReInventWkr.com\",\n    \"ToEthAccount\":\"0xdf007c3018cfb86e7877a96897a655b7f253a2fe\",\n    \"coincount\":2,\n    \"gasprice\":20000,\n    \"gaslimit\":500000\n}"
+					"raw": "{\n    \"email\":\"customer1@reinventwkr.com\",\n    \"ToEthAccount\":\"Enter customer 3 Ethereum address\",\n    \"coincount\":2,\n    \"gasprice\":20000,\n    \"gaslimit\":500000\n}"
 				},
 				"url": {
 					"raw": "{{apigatewayURL}}/sendcoins",
@@ -257,8 +216,12 @@
 	"variable": [
 		{
 			"key": "apigatewayURL",
-			"value": "https://ba89zm7zkc.execute-api.us-east-1.amazonaws.com",
+			"value": "Enter API Gateway URL",
 			"type": "default"
+		},
+		{
+			"value": "",
+			"type": "string"
 		}
 	]
 }
